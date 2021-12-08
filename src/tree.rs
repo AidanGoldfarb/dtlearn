@@ -1,10 +1,10 @@
 use crate::attribute::{*};
 
 pub struct Tree{
-    root: Node,
+    pub root: Node,
 }
 
 pub struct Node{
-    v: Attribute,
-    children: Vec<Node>,
+    pub v: Attribute,
+    pub children: Vec<Node>,
 }

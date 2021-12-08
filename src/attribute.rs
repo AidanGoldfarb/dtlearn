@@ -1,4 +1,8 @@
+use crate::example::{*};
+
 pub enum Attribute {
+    OutputYes,
+    OutputNo,
     Alt,
     Bar,
     Fri,
