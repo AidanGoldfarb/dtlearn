@@ -3,7 +3,7 @@ pub mod example;
 pub mod tree;
 
 use crate::example::{Example};
-use crate::attribute::{Attribute};
+use crate::attribute::{*};
 use crate::tree::{Tree, Node};
 use strum::{IntoEnumIterator};
 
@@ -18,20 +18,45 @@ fn learn_decision_tree(examples: Vec<Example>,attributes: Vec<Attribute>,parent_
         return plurality_value(&parent_examples);
     }
     else{
-        let max_entropy: f32 = f32::MIN;
+        let mut max_entropy: f32 = f32::MIN;
+        let mut max_entropy_attr: Attribute = Attribute::Est;
         for a in attributes.iter(){
-            //Tree {root: Node{v: Attribute::Est,children: Vec::new()}}
-            todo!();
+            let cur_imprt = Importance(a.clone(),&examples);
+            if  cur_imprt > max_entropy {
+                max_entropy_attr = a.clone();
+                max_entropy = cur_imprt;
+            }
         }
+        let tree = Tree {root: Node{v: max_entropy_attr,children: Vec::new()}};
+        // for v in Attribute::max_entropy_attr::iter(){
+
+        // }
     }
     Tree {root: Node{v: Attribute::Est,children: Vec::new()}}
 }
 
+#[allow(non_snake_case)]
+fn Importance(attribute: Attribute, examples: &Vec<Example>)-> f32{
+    let mut p = 0;
+    let mut n = 0;
+    for example in examples{
+        if example.output == Attribute::OutputYes{
+            p+=1;
+        }
+        else{
+            n+=1;
+        }
+    }
+    B(p as f32/(p as f32 + n as f32)) - Remainder(attribute, examples, p, n)
+}
+
 // //−(q log 2 q + (1 − q) log 2 (1 − q)) .
+#[allow(non_snake_case)]
 fn B(q: f32)-> f32{
     -(q*q.log2() + (1.0-q)*(1.0-q).log2())
 }
 
+#[allow(non_snake_case)]
 fn Remainder(attribute: Attribute, examples: &Vec<Example>, p: usize, n: usize) -> f32{
     let k = 1;
     let mut sum = 0.0;
@@ -74,4 +99,32 @@ fn plurality_value(parent_examples: &Vec<Example>) -> Tree{
     else { 
         Tree{root: Node{v: Attribute::OutputNo, children: Vec::new()}}
     }
+}
+
+fn max(a: f32, b: f32) ->f32 {
+    if a>=b {a} else {b}
+}
+
+#[cfg(test)]
+mod tests {
+    // Note this useful idiom: importing names from outer (for mod tests) scope.
+    use super::*;
+    use pretty_assertions::{assert_eq};
+
+    #[test]
+    fn entropy_fair_coin(){
+        assert_eq!(B(0.5), 1.0);
+    }
+
+    // #[test]
+    // fn entropy_die4(){
+    //     assert_eq!(B(0.25), 2.0);
+
+    // }
+
+    #[test]
+    fn entropy_loaded(){
+        assert!((B(0.99) - 0.08).abs() < 0.001);
+    }
+    
 }
