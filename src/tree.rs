@@ -1,4 +1,4 @@
-use crate::attribute::{*};
+use crate::attribute::{Attribute};
 
 pub struct Tree{
     pub root: Node,

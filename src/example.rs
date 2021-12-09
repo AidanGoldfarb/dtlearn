@@ -1,14 +1,7 @@
-use crate::attribute::{*};
-
+use crate::attribute::{Attribute};
 
 pub struct Example {
     pub id: usize,
-    pub output: Output,
+    pub output: Attribute,
     pub attributes: Vec<Attribute>,
-}
-
-#[derive(PartialEq)]
-pub enum Output{
-    Yes,
-    No,
 }
