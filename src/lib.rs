@@ -4,22 +4,22 @@ pub mod tree;
 
 use crate::example::{Example};
 use crate::attribute::{*};
-use crate::tree::{Tree, Node};
-use strum::{IntoEnumIterator};
+use crate::tree::{*};
+use strum::IntoEnumIterator;
 
 fn learn_decision_tree(examples: Vec<Example>,attributes: Vec<Attribute>,parent_examples: Vec<Example>) -> Tree{
     if examples.is_empty(){
         return plurality_value(&parent_examples);
     }
     else if unity(&examples){
-        return Tree{root: Node{v: examples[0].output.clone(), children: Vec::new()}};
+        return Tree{root: Node::Leaf(LeafNode{result: examples[0].output})};
     }
     else if attributes.is_empty(){
         return plurality_value(&parent_examples);
     }
     else{
         let mut max_entropy: f32 = f32::MIN;
-        let mut max_entropy_attr: Attribute = Attribute::Est;
+        let mut max_entropy_attr: Attribute = Attribute::Est(0);
         for a in attributes.iter(){
             let cur_imprt = Importance(a.clone(),&examples);
             if  cur_imprt > max_entropy {
@@ -27,12 +27,12 @@ fn learn_decision_tree(examples: Vec<Example>,attributes: Vec<Attribute>,parent_
                 max_entropy = cur_imprt;
             }
         }
-        let tree = Tree {root: Node{v: max_entropy_attr,children: Vec::new()}};
+        //let tree = Tree {root: Node{v: max_entropy_attr,children: Vec::new()}};
         // for v in Attribute::max_entropy_attr::iter(){
 
         // }
     }
-    Tree {root: Node{v: Attribute::Est,children: Vec::new()}}
+    Tree{root: Node::Leaf(LeafNode{result: true})}
 }
 
 #[allow(non_snake_case)]
@@ -40,7 +40,7 @@ fn Importance(attribute: Attribute, examples: &Vec<Example>)-> f32{
     let mut p = 0;
     let mut n = 0;
     for example in examples{
-        if example.output == Attribute::OutputYes{
+        if example.output == true{
             p+=1;
         }
         else{
@@ -79,7 +79,7 @@ fn Remainder(attribute: Attribute, examples: &Vec<Example>, p: usize, n: usize) 
 
 
 fn unity(examples: &Vec<Example>) -> bool{
-    let litmus = examples[0].output.clone();
+    let litmus = examples[0].output;
     for example in examples.iter(){
         if example.output != litmus{
             return false
@@ -91,13 +91,13 @@ fn unity(examples: &Vec<Example>) -> bool{
 fn plurality_value(parent_examples: &Vec<Example>) -> Tree{
     let mut cnt = 0;
     for example in parent_examples.iter(){
-        cnt = if example.output == Attribute::OutputYes { cnt+1 } else { cnt-1 };
+        cnt = if example.output == true { cnt+1 } else { cnt-1 };
     }
     if cnt >= 0 { 
-        Tree{root: Node{v: Attribute::OutputYes, children: Vec::new()}} 
+        Tree{root: Node::Leaf(LeafNode{result: true})} 
     } 
     else { 
-        Tree{root: Node{v: Attribute::OutputNo, children: Vec::new()}}
+        Tree{root: Node::Leaf(LeafNode{result: false})} 
     }
 }
 
