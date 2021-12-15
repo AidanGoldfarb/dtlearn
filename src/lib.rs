@@ -2,8 +2,10 @@ pub mod attribute;
 pub mod example;
 pub mod tree;
 
+
 use crate::example::{Example};
 use crate::attribute::{*};
+use crate::Attribute::*;
 use crate::tree::{*};
 use strum::IntoEnumIterator;
 
@@ -19,7 +21,7 @@ fn learn_decision_tree(examples: Vec<Example>,attributes: Vec<Attribute>,parent_
     }
     else{
         let mut max_entropy: f32 = f32::MIN;
-        let mut max_entropy_attr: Attribute = Attribute::Est(0);
+        let mut max_entropy_attr: Attribute = Est(vec![0,1,2]);
         for a in attributes.iter(){
             let cur_imprt = Importance(a.clone(),&examples);
             if  cur_imprt > max_entropy {
@@ -27,10 +29,12 @@ fn learn_decision_tree(examples: Vec<Example>,attributes: Vec<Attribute>,parent_
                 max_entropy = cur_imprt;
             }
         }
-        //let tree = Tree {root: Node{v: max_entropy_attr,children: Vec::new()}};
-        // for v in Attribute::max_entropy_attr::iter(){
-
-        // }
+        let tree = Tree {root: Node::Inner(InnerNode{v: max_entropy_attr.clone(),children: Vec::new()})};
+        match max_entropy_attr{
+            Bar(arr) | Fri(arr) | Hun(arr) | Rain(arr) | Res(arr) => (),
+            Est(arr) | Pat(arr) | Price(arr) | Type(arr) | Est(arr) => (),
+            _ => (),
+        }
     }
     Tree{root: Node::Leaf(LeafNode{result: true})}
 }

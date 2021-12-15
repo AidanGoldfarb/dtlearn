@@ -3,14 +3,14 @@ use strum_macros::EnumIter;
 
 #[derive(EnumIter, Debug, PartialEq, Clone)]
 pub enum Attribute {   
-    Alt(bool),
-    Bar(bool),
-    Fri(bool),
-    Hun(bool),
-    Pat(usize),
-    Price(usize),
-    Rain(bool),
-    Res(bool),
-    Type(usize),
-    Est(usize),
+    Alt(Vec<bool>),
+    Bar(Vec<bool>),
+    Fri(Vec<bool>),
+    Hun(Vec<bool>),
+    Pat(Vec<usize>),
+    Price(Vec<usize>),
+    Rain(Vec<bool>),
+    Res(Vec<bool>),
+    Type(Vec<usize>),
+    Est(Vec<usize>),
 }
